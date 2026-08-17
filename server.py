@@ -28,6 +28,7 @@ if __name__ == "__main__":
         
         print(f' -> Se ha recibido el siguiente mensaje: {recv_message["HEAD"]}')
         response_message = message.server_response
+        response_message["HEAD"] += "\r\nX-ElQuePregunta: Julio"
 
         new_socket.send(creator.create_HTTP_message(response_message))
 
