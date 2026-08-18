@@ -1,0 +1,10 @@
+import socket
+
+def create_HTTP_message(message):
+    head = message["HEAD"]
+    body = message["BODY"]
+
+    to_encode = head + "\r\n\r\n" + body + "\r\n\r\n"
+    encoded = to_encode.encode()
+
+    return encoded
