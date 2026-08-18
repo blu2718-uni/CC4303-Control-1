@@ -3,6 +3,10 @@ import creator
 import parser
 import message
 
+SERVER_IP="arenarium"
+SERVER_PORT=8000
+BUFFER_SIZE=5
+
 def receive_full_message(socket, buffer_size):
     recv_message = socket.recv(buffer_size) 
     full_message = recv_message
@@ -10,12 +14,12 @@ def receive_full_message(socket, buffer_size):
     while full_message.decode().find("\r\n\r\n") == -1:
         recv_message = socket.recv(buffer_size)
         full_message += recv_message
-
+    
     return parser.parse_HTTP_message(full_message) 
     
 if __name__ == "__main__":
-    buffer_size = 2048
-    new_socket_address = ("arenarium", 8000)
+    buffer_size = BUFFER_SIZE
+    new_socket_address = (SERVER_IP, SERVER_PORT)
 
     print('Creando socket - Servidor')
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
