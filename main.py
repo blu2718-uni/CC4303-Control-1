@@ -1,6 +1,5 @@
-def main():
-    print("Hello from cc4303-control-1!")
+mensaje = "se ha recibido el mensaje asdasd correctamente"
 
+find = mensaje.find("el")
 
-if __name__ == "__main__":
-    main()
+mensaje2 = mensaje[find:]

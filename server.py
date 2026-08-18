@@ -1,7 +1,13 @@
 import socket
+import json
+
 import creator
 import parser
 import message
+
+SERVER_IP="172.20.10.2"
+SERVER_PORT=8000
+BUFFER_SIZE=5
 
 def receive_full_message(socket, buffer_size):
     recv_message = socket.recv(buffer_size) 
@@ -10,17 +16,24 @@ def receive_full_message(socket, buffer_size):
     while full_message.decode().find("\r\n\r\n") == -1:
         recv_message = socket.recv(buffer_size)
         full_message += recv_message
-
+    
     return parser.parse_HTTP_message(full_message) 
     
 if __name__ == "__main__":
-    buffer_size = 2048
-    new_socket_address = ("arenarium", 8000)
+    buffer_size = BUFFER_SIZE
+    new_socket_address = (SERVER_IP, SERVER_PORT)
 
     print('Creando socket - Servidor')
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind(new_socket_address)
     server_socket.listen(3)
+
+    json_name = input("Nombre del archivo JSON: ")
+    json_addres = input("Direccion del archivo JSON: ")
+
+    with open(json_addres + "/" + json_name) as file:
+        data = json.load(file)
+        name = data["nombre"]
 
     while True:
         new_socket, new_socket_address = server_socket.accept()
@@ -28,7 +41,7 @@ if __name__ == "__main__":
         
         print(f' -> Se ha recibido el siguiente mensaje: {recv_message["HEAD"]}')
         response_message = message.server_response
-        response_message["HEAD"] += "\r\nX-ElQuePregunta: Julio"
+        response_message["HEAD"] += f"\r\nX-ElQuePregunta: {name}"
 
         new_socket.send(creator.create_HTTP_message(response_message))
 
