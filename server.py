@@ -1,7 +1,6 @@
 import socket
 import creator
 import parser
-import message
 
 SERVER_IP="arenarium"
 SERVER_PORT=8000
