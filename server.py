@@ -7,6 +7,11 @@ SERVER_IP="arenarium"
 SERVER_PORT=8000
 BUFFER_SIZE=5
 
+with open("html_response.html", "r") as file:
+    html = file.read()
+
+server_response = {"HEAD":f"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: {len(html.encode("utf-8"))}","BODY":html}
+
 def receive_full_message(socket, buffer_size):
     recv_message = socket.recv(buffer_size) 
     full_message = recv_message
@@ -31,7 +36,7 @@ if __name__ == "__main__":
         recv_message = receive_full_message(new_socket, buffer_size)
         
         print(f' -> Se ha recibido el siguiente mensaje: {recv_message["HEAD"]}')
-        response_message = message.server_response
+        response_message = server_response
         response_message["HEAD"] += "\r\nX-ElQuePregunta: Julio"
 
         new_socket.send(creator.create_HTTP_message(response_message))
