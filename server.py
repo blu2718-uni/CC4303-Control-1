@@ -41,8 +41,6 @@ if __name__ == "__main__":
     elif len(sys.argv) > 3:
         print("Mas argumentos que lo esperado, usando valores por defecto")
 
-    print(json_address + json_name)
-
     with open(json_address + json_name) as file:
         name = json.load(file)["nombre"]
 
@@ -53,7 +51,7 @@ if __name__ == "__main__":
         print(f' -> Se ha recibido el siguiente mensaje: {recv_message["HEAD"]}')
         response_message = message.server_response
         if response_message["HEAD"].find("\r\nX-ElQuePregunta") == -1:
-         response_message["HEAD"] += f"\r\nX-ElQuePregunta: {name}"
+            response_message["HEAD"] += f"\r\nX-ElQuePregunta: {name}"
 
         new_socket.send(creator.create_HTTP_message(response_message))
 
