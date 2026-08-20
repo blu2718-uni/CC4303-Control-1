@@ -3,9 +3,8 @@ import json
 import sys
 import creator
 import parser
-import message
 
-SERVER_IP="172.20.10.2"
+SERVER_IP="arenarium"
 SERVER_PORT=8000
 BUFFER_SIZE=5
 
@@ -54,7 +53,7 @@ if __name__ == "__main__":
         recv_message = receive_full_message(new_socket, buffer_size)
         
         print(f' -> Se ha recibido el siguiente mensaje: {recv_message["HEAD"]}')
-        response_message = message.server_response
+        response_message = server_response
         if response_message["HEAD"].find("\r\nX-ElQuePregunta") == -1:
             response_message["HEAD"] += f"\r\nX-ElQuePregunta: {name}"
 
