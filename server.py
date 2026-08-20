@@ -4,11 +4,9 @@ import sys
 import creator
 import parser
 
-SERVER_IP="arenarium"
+SERVER_IP="172.20.10.2"
 SERVER_PORT=8000
 BUFFER_SIZE=5
-
-file_address = ...
 
 with open("html_response.html", "r") as file:
     html = file.read()
