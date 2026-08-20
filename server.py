@@ -11,6 +11,11 @@ BUFFER_SIZE=5
 
 file_address = ...
 
+with open("html_response.html", "r") as file:
+    html = file.read()
+
+server_response = {"HEAD":f"HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: {len(html.encode("utf-8"))}","BODY":html}
+
 def receive_full_message(socket, buffer_size):
     recv_message = socket.recv(buffer_size) 
     full_message = recv_message
