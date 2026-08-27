@@ -1,5 +1,3 @@
-import socket
-
 def create_HTTP_message(message):
     head = message["HEAD"]
     body = message["BODY"]
