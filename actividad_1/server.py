@@ -13,15 +13,25 @@ with open("actividad_1/html_response.html", "r") as file:
 
 server_response = {"HEAD":f"HTTP/1.1 403 Forbidden\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Length: {len(html.encode("utf-8"))}","BODY":html}
 
-def receive_full_message(socket, buffer_size):
+def receive_full_head(socket, buffer_size):
     recv_message = socket.recv(buffer_size) 
+    full_body = recv_message
+
+    while full_body.decode().find("\r\n\r\n") == -1:
+        recv_message = socket.recv(buffer_size)
+        full_body += recv_message
+    
+    return parser.parse_HTTP_message(full_body) 
+
+def receive_full_message(socket, buffer_size):
+    recv_message = socket.recv(buffer_size)
     full_message = recv_message
 
-    while full_message.decode().find("\r\n\r\n") == -1:
+    while len(recv_message) == buffer_size:
         recv_message = socket.recv(buffer_size)
         full_message += recv_message
-    
-    return parser.parse_HTTP_message(full_message) 
+
+    return parser.parse_HTTP_message(full_message)
     
 if __name__ == "__main__":
     buffer_size = BUFFER_SIZE
@@ -52,7 +62,7 @@ if __name__ == "__main__":
         new_socket, new_socket_address = server_socket.accept()
         block = False
         PROXY_PORT=80
-        recv_message = receive_full_message(new_socket, buffer_size)
+        recv_message = receive_full_head(new_socket, buffer_size)
         
         print(f' -> Se ha recibido el siguiente mensaje: {recv_message["HEAD"]}')
         PROXY_HOST=""
@@ -84,9 +94,8 @@ if __name__ == "__main__":
         
         if not block:
             proxy_socket.send(creator.create_HTTP_message(recv_message))
-            proxy_to_parse_message = proxy_socket.recv(4092)
+            parsed_proxy_message = receive_full_message(proxy_socket, BUFFER_SIZE)
 
-            parsed_proxy_message = parser.parse_HTTP_message(proxy_to_parse_message)
             # ciclo que cambia las forbidden words
             for forbidden in json["forbidden_words"]:
                 keys = forbidden.keys()
