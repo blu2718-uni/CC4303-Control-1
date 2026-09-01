@@ -69,7 +69,7 @@ if __name__ == "__main__":
         print(f'Se ha recibido el siguiente mensaje:\n{recv_message["HEAD"]}')
         print("-"*60)
         
-        if "GET" recv_message["HEAD"]:
+        if "GET" in recv_message["HEAD"]:
             if "image/" in recv_message["HEAD"]:
                 image[0] = True
 
