@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>La Negra · Maison Felina</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600&display=swap');
+
+    :root {
+      --negro: #0d0d10;
+      --negro-suave: #17171c;
+      --marfil: #f7f4ee;
+      --marfil-oscuro: #ece7dd;
+      --dorado: #c9a962;
+      --dorado-claro: #e3cf9e;
+      --texto: #3a3a40;
+      --texto-suave: #6e6e76;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--negro);
+      color: var(--marfil);
+      font-family: "Montserrat", sans-serif;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: var(--dorado);
+      color: var(--negro);
+    }
+
+    /* ---------- Navegación ---------- */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(13, 13, 16, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(201, 169, 98, 0.25);
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--dorado);
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--marfil);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--marfil-oscuro);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--dorado);
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 8rem 2rem 4rem;
+      gap: 3rem;
+    }
+
+    .hero-texto {
+      animation: aparecer 1.4s ease both;
+    }
+
+    .etiqueta {
+      display: inline-block;
+      font-size: 0.75rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--dorado);
+      border: 1px solid rgba(201, 169, 98, 0.45);
+      padding: 0.55rem 1.4rem;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+    }
+
+    .hero h1 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(3.2rem, 7vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.02;
+      margin-bottom: 1.5rem;
+      color: var(--marfil);
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--dorado);
+    }
+
+    .hero p {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--texto-suave);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    .cresta {
+      display: block;
+      color: var(--dorado);
+      font-size: 1.2rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-imagen {
+      position: relative;
+      animation: aparecer 1.4s 0.25s ease both;
+    }
+
+    .hero-imagen .marco {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(201, 169, 98, 0.35);
+      outline: 1px solid rgba(201, 169, 98, 0.3);
+      outline-offset: 10px;
+    }
+
+    .hero-imagen img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: contrast(1.05) saturate(0.95);
+    }
+
+    .hero-imagen .detalle {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      padding: 1.2rem 1.6rem;
+      background: linear-gradient(180deg, transparent 0%, rgba(13, 13, 16, 0.92) 100%);
+      font-size: 0.78rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dorado-claro);
+      text-align: right;
+    }
+
+    .ornamento {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border: 1px solid rgba(201, 169, 98, 0.3);
+      border-radius: 50%;
+      top: -40px;
+      right: -40px;
+      z-index: -1;
+    }
+
+    .ornamento::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(201, 169, 98, 0.18);
+      border-radius: 50%;
+    }
+
+    /* ---------- Separador ---------- */
+    .separador {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.4rem;
+      padding: 1rem 0;
+      color: var(--dorado);
+    }
+
+    .separador::before,
+    .separador::after {
+      content: "";
+      height: 1px;
+      width: min(160px, 22vw);
+      background: linear-gradient(90deg, transparent, rgba(201, 169, 98, 0.6));
+    }
+
+    .separador::after {
+      background: linear-gradient(90deg, rgba(201, 169, 98, 0.6), transparent);
+    }
+
+    .separador svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--dorado);
+    }
+
+    /* ---------- Secciones ---------- */
+    .seccion {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5.5rem 2rem;
+    }
+
+    .titulo-seccion {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .titulo-seccion h2 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+      font-weight: 700;
+      color: var(--marfil);
+      margin-bottom: 0.9rem;
+    }
+
+    .titulo-seccion h2 em {
+      color: var(--dorado);
+      font-style: italic;
+    }
+
+    /* ---------- Retratos (galería principal) ---------- */
+    .retratos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      align-items: end;
+    }
+
+    .retrato {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 169, 98, 0.3);
+      background: var(--negro-suave);
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, border-color 0.5s ease;
+    }
+
+    .retrato:hover {
+      transform: translateY(-10px);
+      border-color: rgba(201, 169, 98, 0.7);
+      box-shadow: 0 30px 60px -18px rgba(0, 0, 0, 0.85);
+    }
+
+    .retrato img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      aspect-ratio: 3 / 4;
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .retrato:hover img {
+      transform: scale(1.045);
+    }
+
+    .retrato figcaption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 2.4rem 1.4rem 1.3rem;
+      background: linear-gradient(180deg, transparent 0%, rgba(13, 13, 16, 0.94) 100%);
+      text-align: center;
+    }
+
+    .retrato figcaption strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--marfil);
+      letter-spacing: 0.04em;
+    }
+
+    .retrato figcaption span {
+      display: block;
+      margin-top: 0.3rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--dorado);
+    }
+
+    .retrato.principal {
+      z-index: 2;
+    }
+
+    .retrato.principal img {
+      aspect-ratio: 3 / 4.6;
+    }
+
+    /* ---------- Cierre ---------- */
+    .cierre {
+      text-align: center;
+      padding: 6.5rem 2rem;
+      background:
+        radial-gradient(ellipse 60% 90% at 50% 110%, rgba(201, 169, 98, 0.14) 0%, transparent 70%),
+        var(--negro);
+    }
+
+    .cierre h2 {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-style: italic;
+      font-weight: 600;
+      color: var(--marfil);
+      margin-bottom: 1.2rem;
+    }
+
+    .cierre .firma {
+      color: var(--dorado);
+      font-size: 0.78rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-top: 1.8rem;
+    }
+
+    /* ---------- Pie ---------- */
+    footer {
+      border-top: 1px solid rgba(201, 169, 98, 0.25);
+      text-align: center;
+      padding: 2.4rem 2rem;
+      color: var(--texto-suave);
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+    }
+
+    footer .patas {
+      color: var(--dorado);
+      letter-spacing: 0.5em;
+      display: block;
+      margin-bottom: 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    /* ---------- Animaciones ---------- */
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(26px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .revelar {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .revelar.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding-top: 7rem;
+        text-align: center;
+      }
+
+      .hero-imagen {
+        order: -1;
+        max-width: 440px;
+        margin: 0 auto;
+      }
+
+      .retratos {
+        grid-template-columns: 1fr;
+        max-width: 460px;
+        margin: 0 auto;
+        align-items: stretch;
+      }
+
+      .retrato.principal img {
+        aspect-ratio: 3 / 4;
+      }
+
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navegación -->
+  <header>
+    <nav class="navbar">
+      <a href="#" class="logo">La Negra <span>❦</span> La Gata</a>
+      <ul class="nav-links">
+        <li><a href="#retratos">La Galería</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-texto">
+      <span class="etiqueta">Maison La Negra · Felina de salón</span>
+      <span class="cresta" aria-hidden="true">❦</span>
+      <h1>La Negra,<br /><em>una dama</em><br />de bigotes blancos.</h1>
+      <p>Pechera de marfil. Mirada de esmeralda. No firma autógrafos.</p>
+      <p class="hero-figcaption" style="font-size: 0.78rem; letter-spacing: 0.25em; text-transform: uppercase; color: #c9a962;">
+        ✦ Deslice con delicadeza ✦
+      </p>
+    </div>
+    <figure class="hero-imagen">
+      <div class="marco">
+        <img src="negra1.jpg" alt="La Negra, gata negra con pechera y patas blancas, recostada con elegancia en el sofá" />
+        <span class="detalle">Salón de trono · Ala oeste</span>
+      </div>
+      <div class="ornamento"></div>
+    </figure>
+  </section>
+
+  <!-- Separador -->
+  <div class="separador" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M12 2c-1 4-3 6-6 7 3 1 5 3 6 7 1-4 3-6 6-7-3-1-5-3-6-7zm0 12c-.6 2.4-1.9 3.7-4.3 4.3 2.4.6 3.7 1.9 4.3 4.3.6-2.4 1.9-3.7 4.3-4.3-2.4-.6-3.7-1.9-4.3-4.3z"/></svg>
+  </div>
+
+  <!-- Retratos -->
+  <section class="seccion" id="retratos">
+    <div class="titulo-seccion revelar">
+      <h2>La <em>galería</em> privada</h2>
+    </div>
+    <div class="retratos">
+      <figure class="retrato revelar">
+        <img src="negra3.jpg" alt="Primer plano de La Negra lamiéndose el hocico, con sus bigotes blancos bien visibles" />
+        <figcaption>
+          <strong>I · El aseo real</strong>
+          <span>sobre sofá</span>
+        </figcaption>
+      </figure>
+      <figure class="retrato principal revelar">
+        <img src="negra1.jpg" alt="La Negra sentada con sus patitas blancas extendidas sobre el sofá" />
+        <figcaption>
+          <strong>II · Realeza en reposo</strong>
+          <span>sobre cojín</span>
+        </figcaption>
+      </figure>
+      <figure class="retrato revelar">
+        <img src="negra2.jpg" alt="La Negra sentada con orgullo frente a la madera, luciendo su pechera blanca" />
+        <figcaption>
+          <strong>III · Mirada de gema</strong>
+	  <span>sobre reposabrazos</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Separador -->
+  <div class="separador" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M12 2c-1 4-6 7-6 7s5-1 6 3c1-4 6-3 6-3s-5-3-6-7z"/></svg>
+  </div>
+
+  <!-- Cierre -->
+  <section class="cierre">
+    <div class="cresta revelar" aria-hidden="true">❦</div>
+    <h2 class="revelar">«Elegancia no se enseña,<br />se nace con ella.»</h2>
+    <p class="firma revelar">— Su Majestad, MMXXVI</p>
+  </section>
+
+  <!-- Pie -->
+  <footer>
+    <span class="patas">🐾 🐾 🐾 🐾</span>
+    <p>La Negra &copy; MMXXVI · Todos los cojines reservados</p>
+  </footer>
+
+  <script>
+    const observador = new IntersectionObserver(
+      (entradas) => {
+        entradas.forEach((entrada) => {
+          if (entrada.isIntersecting) {
+            entrada.target.classList.add("visible");
+            observador.unobserve(entrada.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    document.querySelectorAll(".revelar").forEach((el) => observador.observe(el));
+  </script>
+
+</body>
+</html>
