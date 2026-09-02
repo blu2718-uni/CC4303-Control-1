@@ -18,16 +18,26 @@ def gen_image_response(image):
         picture = file.read()
     return {"HEAD":f"HTTP/1.1 403 Forbidden\r\nContent-Type: image/jpeg; charset=UTF-8\r\nContent-Length: {len(picture)}","BODY":picture}
 
-def receive_full_message(socket, buffer_size):
+def receive_full_head(socket, buffer_size):
     recv_message = socket.recv(buffer_size) 
-    full_message = recv_message
+    full_body = recv_message
 
-    while full_message.decode().find("\r\n\r\n") == -1:
+    while full_body.decode().find("\r\n\r\n") == -1:
+        recv_message = socket.recv(buffer_size)
+        full_body += recv_message
+    
+    return parser.parse_HTTP_message(full_body) 
+
+def receive_full_message(socket, buffer_size):
+    recv_message = socket.recv(buffer_size)
+    full_message = recv_message
+    
+    while len(recv_message) == buffer_size:
         recv_message = socket.recv(buffer_size)
         full_message += recv_message
-    
-    return parser.parse_HTTP_message(full_message) 
-    
+
+    return parser.parse_HTTP_message(full_message)
+
 if __name__ == "__main__":
     buffer_size = BUFFER_SIZE
     new_socket_address = (SERVER_IP, SERVER_PORT)
@@ -59,10 +69,9 @@ if __name__ == "__main__":
 
     while True:
         block = False
-        redact = False
         image = [False, ""]
         new_socket, new_socket_address = server_socket.accept()
-        recv_message = receive_full_message(new_socket, buffer_size)
+        recv_message = receive_full_head(new_socket, buffer_size)
         proxy_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         PROXY_HOST=""
         
@@ -73,29 +82,28 @@ if __name__ == "__main__":
             if "image/" in recv_message["HEAD"]:
                 image[0] = True
 
-            host_start = recv_message["HEAD"].find("Host: ") + 6
+            host_start = recv_message["HEAD"].find("http://") + 7
             current = host_start
 
-            while recv_message["HEAD"][current] != "\r":
+            while recv_message["HEAD"][current] != "/":
                 PROXY_HOST += recv_message["HEAD"][current]
                 current += 1        
+            
             new_proxy_address = (PROXY_HOST, 80) 
            
             print(f"Lo que se proxeará es: {new_proxy_address}")
             print("-"*60)
             
-            route_start = recv_message["HEAD"].find("http://") + 7 + len(PROXY_HOST)
-            if recv_message["HEAD"][route_start + 1] == " ":
+            if recv_message["HEAD"][current + 1] == " ":
                 to_block = PROXY_HOST
             else:
                 route = ""
-                current_route = route_start
-                while recv_message["HEAD"][current_route] != " ":
-                    route += recv_message["HEAD"][current_route]
-                    current_route += 1
-                    to_block = PROXY_HOST + route
-                    if image[0]:
-                        image[1] = route
+                while recv_message["HEAD"][current] != " ":
+                    route += recv_message["HEAD"][current]
+                    current += 1
+                to_block = PROXY_HOST + route
+                if image[0]:
+                    image[1] = route
             
             proxy_socket.connect(new_proxy_address)
             
@@ -108,12 +116,16 @@ if __name__ == "__main__":
                     recv_message["HEAD"] += f"\r\nX-ElQuePregunta: {json["nombre"]}"
                 
                 proxy_socket.send(creator.create_HTTP_message(recv_message))
-                proxy_response_message = proxy_socket.recv(4092)
+                parsed_proxy_message = receive_full_message(proxy_socket, BUFFER_SIZE)
                 
-                if redact:
-                    pass
+                for forbidden in json["forbidden_words"]:
+                    keys = forbidden.keys()
+                    for key in keys:
+                        parsed_proxy_message["BODY"] = parsed_proxy_message["BODY"].replace(key, forbidden[key])
                 
-                if image[0]:
+                if not image[0]:
+                    proxy_response_message = creator.create_HTTP_message(parsed_proxy_message)
+                else:
                     proxy_response_message = creator.create_HTTP_message(gen_image_response(image[1]))
             else:
                 proxy_response_message = creator.create_HTTP_message(server_response)
@@ -124,5 +136,4 @@ if __name__ == "__main__":
         new_socket.send(proxy_response_message)
         new_socket.close()
         print(f"conexión con el socket de servidor {new_socket_address} ha sido cerrada")
-       
         print("="*60)
