@@ -73,6 +73,7 @@ if __name__ == "__main__":
         new_socket, new_socket_address = server_socket.accept()
         recv_message = receive_full_head(new_socket, buffer_size)
         proxy_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        proxy_response_message = b''
         PROXY_HOST=""
         
         print(f'Se ha recibido el siguiente mensaje:\n{recv_message["HEAD"]}')
