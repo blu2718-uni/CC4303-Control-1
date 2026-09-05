@@ -1,0 +1,7 @@
+[project]
+name = "cc4303-control-1"
+version = "0.1.0"
+description = "Repositorio en el que se resuelven las dos partes de la primera actividad."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
