@@ -1,3 +1,4 @@
+import sys
 import socket
 from dnslib import DNSRecord, DNSHeader, RR, A
 from dnslib.dns import CLASS, QTYPE
@@ -9,7 +10,7 @@ SERVER_IP="100.117.46.88"
 SERVER_PORT=8000
 BUFF_SIZE = 8192
 
-def gen_new_cache(last):
+def gen_new_cache(last, debug_mode=False):
     top = []
     # Manually count frequency of each element
     freq = {}
@@ -25,31 +26,28 @@ def gen_new_cache(last):
                 top.append((often, query[1]))
                 break
     
-    print("!"*50)
-    print("GENERÉ UN CACHÉ")
-    print(dict(top))
-    print("!"*50)
+
+    if debug_mode: print("(debug) Se generó un caché")
 
     return dict(top)
 
-def resolver(mensaje_consulta, ip_addr="198.41.0.4", cache={}):
+def resolver(mensaje_consulta, ip_addr="198.41.0.4", cache={}, debug_mode=False):
 
     server_address = (ip_addr, 53)
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     mensaje_parseado_para_debug = parser.parse_DNS_message(mensaje_consulta)
     quiero_saber = str(mensaje_parseado_para_debug.get_q().get_qname())[::-1]
-    print(f"(debug) Consultando '{mensaje_parseado_para_debug.get_q().get_qname()}' a '.' con dirección IP '{ip_addr}'")
+    if debug_mode: print(f"(debug) Consultando '{mensaje_parseado_para_debug.get_q().get_qname()}' a '.' con dirección IP '{ip_addr}'")
     
     if "{}".format(mensaje_parseado_para_debug.get_q().get_qname()) in cache:
-        cached_response = DNSRecord(DNSHeader(qr=1,rd=1,ra=1,id=mensaje_parseado_para_debug.header.id),
+        cached_response = DNSRecord(DNSHeader(qr=1,
+                                              rd=1,
+                                              ra=1,
+                                              id=mensaje_parseado_para_debug.header.id),
                                     q=mensaje_parseado_para_debug.get_q(),
                                     a=RR("{}".format(mensaje_parseado_para_debug.get_q().get_qname()), 
                                          rdata=A(cache["{}".format(mensaje_parseado_para_debug.get_q().get_qname())]))                                  )
-        print("!"*50)
-        print("USÉ EL CACHÉ!")
-        print(cached_response)
-        print("!"*50)
-        
+        if debug_mode: print("(debug) Se utilizó el caché")
         return cached_response.pack()
     try:
         sock.sendto(mensaje_consulta, server_address)
@@ -78,6 +76,13 @@ def resolver(mensaje_consulta, ip_addr="198.41.0.4", cache={}):
 
 if __name__ == "__main__":
     server_socket_address = (SERVER_IP, SERVER_PORT)
+    debug = False
+    if len(sys.argv) == 2:
+        if sys.argv[1] in ["-d", "--debug"]:
+            debug = True
+        else:
+            print("Flag inválido, se continuará con la ejecución normal")
+
 
     print("="*60)
     print('Creando socket no orientado a conexión...')
@@ -88,6 +93,9 @@ if __name__ == "__main__":
     
     print("Socket creado")
     print("="*60)
+    if debug:
+        print("Se ha activado el modo debug")
+        print("="*60)
     
     last_queries = []
 
@@ -97,7 +105,7 @@ if __name__ == "__main__":
         print(f"Mensaje parseado:\n{parser.parse_DNS_message(message)}")
         print("-"*60)
 
-        resolve = resolver(message, cache=gen_new_cache(last_queries))
+        resolve = resolver(message, cache=gen_new_cache(last_queries, debug_mode=debug), debug_mode=debug)
 
         if resolve != None:
             server_socket.sendto(resolve, address)
@@ -105,20 +113,13 @@ if __name__ == "__main__":
             parseado = parser.parse_DNS_message(resolve)
             print(f"Mensaje parseado:\n{parseado}")
             if len(last_queries) < 20:
-                print("!"*50)
-                print("USÉ LAST QUIERIES (caso1)")
-
+                if debug: print("(debug) Se actualizaron las últimas queries")
                 last_queries = [("{}".format(parseado.get_a().get_rname()),
                                  "{}".format(parseado.get_a().rdata))] + last_queries
-                print(last_queries)
-                print("!"*50)
             else:
-                print("!"*50)
-                print("USÉ LAST QUIERIES (caso2)")
+                if debug: print("(debug) Se actualizaron las últimas queries")
                 last_queries = [("{}".format(parseado.get_a().get_rname()),
                                 "{}".format(parseado.get_a().rdata))] + last_queries.pop()
-                print(last_queries)
-                print("!"*50)
                 
 
         print("="*60)
