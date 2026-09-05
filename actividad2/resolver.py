@@ -5,7 +5,7 @@ import dnslib
 
 import parser
 
-SERVER_IP="10.0.4.222"
+SERVER_IP="100.117.46.88"
 SERVER_PORT=8000
 BUFF_SIZE = 8192
 
@@ -32,11 +32,12 @@ def resolver(mensaje_consulta, ip_addr="198.41.0.4"):
             if isinstance(rr.rdata, dnslib.dns.NS):
                 for addrr in d.ar:
                     if QTYPE.get(addrr.rtype) == "A":
-                        return resolver(mensaje_consulta, addrr.rdata)
+                        print("Tipo addrr.rdata: ",type(addrr.rdata))
+                        return resolver(mensaje_consulta, "{}".format(addrr.rdata))
                 q = DNSRecord.question(rr.rdata)
                 q = bytes(q.pack())
                 newData = resolver(q)
-                return resolver(mensaje_consulta, newData.get_a().rdata)                
+                return resolver(mensaje_consulta, "{}".format(newData.get_a().rdata))              
 
     finally:
         sock.close()
