@@ -85,7 +85,7 @@ Para el comando:
 ```
 dig -p8000 @[IP_SERVIDOR_DNS] www.cc4303.bachmann.cl
 ```
-no se obtiene una respuesta, ya que la respuesta que recibe el servidor para resolver no contiene ningún resource record de tipo A en la respuesta, ni recibe un resource record de tipo NS en la sección authority, por lo que, según enunciado, se debe ignorar, provocando un connection timed out para el cliente.
+no se obtiene una respuesta soportada por el resolver, ya que la respuesta que recibe el servidor para resolver no contiene ningún resource record de tipo A en la respuesta, ni recibe un resource record de tipo NS en la sección authority, por lo que, según enunciado, se debe ignorar, retornando el último mensaje recibido.
 
 En este caso se esperaba una respuesta de parte del servidor equivalente al comando ejecutado con cc4303.bachmann.cl, pero luego de realizar la misma consulta a @1.1.1.1, se puede apreciar que esta recibe respuesta de tipo SOA en la sección authority, con un rname bachmann.cl. y rdata ns1.digitalocean.com. hostmaster.bachmann.cl. 0 10800 3600 604800 1800. Esto probablemente ocurre porque se está dando un name server donde podría encontrarse www.cc4303.bachmann.cl, ya que no se logró encontrar esta dirección.
 

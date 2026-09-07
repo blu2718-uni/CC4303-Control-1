@@ -4,7 +4,7 @@ from dnslib import DNSRecord, DNSHeader, RR, A
 from dnslib.dns import QTYPE
 import dnslib
 
-SERVER_IP="arenarium"
+SERVER_IP="10.0.4.222"
 SERVER_PORT=8000
 BUFF_SIZE = 8192
 
