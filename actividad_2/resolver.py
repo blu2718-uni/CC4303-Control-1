@@ -4,7 +4,7 @@ from dnslib import DNSRecord, DNSHeader, RR, A
 from dnslib.dns import QTYPE
 import dnslib
 
-SERVER_IP="10.0.4.222"
+SERVER_IP="arenarium"
 SERVER_PORT=8000
 BUFF_SIZE = 8192
 
@@ -68,9 +68,9 @@ def resolver(mensaje_consulta, ip_addr="198.41.0.4"):
                 for addrr in d.ar:
                     if QTYPE.get(addrr.rclass) == "A":
                         return resolver(mensaje_consulta, "{}".format(addrr.rdata))
-                q = DNSRecord.question(rr.rdata)
+                q = DNSRecord.question(str(rr.rdata))
                 q = bytes(q.pack())
-                newData = resolver(q)
+                newData = DNSRecord.parse(resolver(q))
                 return resolver(mensaje_consulta, "{}".format(newData.get_a().rdata))              
 
     finally:
