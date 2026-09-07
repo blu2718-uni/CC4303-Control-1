@@ -4,7 +4,7 @@ from dnslib import DNSRecord, DNSHeader, RR, A
 from dnslib.dns import QTYPE
 import dnslib
 
-SERVER_IP="10.0.4.222"
+SERVER_IP="arenarium"
 SERVER_PORT=8000
 BUFF_SIZE = 8192
 
@@ -66,17 +66,18 @@ def resolver(mensaje_consulta, ip_addr="198.41.0.4"):
         for rr in d.auth:
             if isinstance(rr.rdata, dnslib.dns.NS):
                 for addrr in d.ar:
-                    if QTYPE.get(addrr.rtype) == "A":
+                    if QTYPE.get(addrr.rclass) == "A":
                         return resolver(mensaje_consulta, "{}".format(addrr.rdata))
-                q = DNSRecord.question(rr.rdata)
+                q = DNSRecord.question(str(rr.rdata))
                 q = bytes(q.pack())
-                newData = resolver(q)
+                newData = DNSRecord.parse(resolver(q))
                 return resolver(mensaje_consulta, "{}".format(newData.get_a().rdata))              
 
     finally:
         sock.close()
 
-    return None
+    if debug: print("(debug) Respuesta no soportada por el resolver, entregando mensaje mas reciente")
+    return data
 
 if __name__ == "__main__":
     server_socket_address = (SERVER_IP, SERVER_PORT)
@@ -113,19 +114,21 @@ if __name__ == "__main__":
 
         resolve = resolver(message)
 
-        if resolve != None:
-            server_socket.sendto(resolve, address)
-            print(f'Se ha enviado el siguiente mensaje:\n{resolve}\nA:\n{address}')
-            parseado = DNSRecord.parse(resolve)
-            print(f"Mensaje parseado:\n{parseado}")
+        server_socket.sendto(resolve, address)
+        print(f'Se ha enviado el siguiente mensaje:\n{resolve}\nA:\n{address}')
+        parseado = DNSRecord.parse(resolve)
+        print(f"Mensaje parseado:\n{parseado}")
+        if parseado.header.a > 0:
             if len(last_queries) < 20:
                 last_queries = [("{}".format(parseado.get_a().get_rname()),
                                 parseado.rr)] + last_queries
             else:
                 last_queries = [("{}".format(parseado.get_a().get_rname()),
                                 parseado.rr)] + last_queries[:len(last_queries)-1]
-
             if debug: print("(debug) Se actualizaron las últimas queries")
-            cache = gen_new_cache(last_queries)
+        else:
+            if debug: print("(debug) Respuesta no tiene rr en sección answer, no se actualiza la caché")
+
+        cache = gen_new_cache(last_queries)
 
         print("="*60)
