@@ -46,6 +46,14 @@ El resto del programa sigue las instrucciones dadas en el enunciado de la activi
 
 Es importante recalcar que una limitación de ignorar cualquier otro tipo de respuestas no consideradas en el paso 4 es, por ejemplo, que no podemos leer registros de tipo AAAA, es decir, no podremos obtener direcciones IP de 128 bits.
 
+## Implementación
+
+El programa consiste en 3 funciones, **gen_new_cache(last: List)**, **resolver(mensaje_consulta: bytes, ip_addr="198.41.0.4": str)** y el programa principal, que se ejecuta automáticamente.
+
+* **gen_new_cache(last: List)**: Esta función recibe una lista con tuplas correspondientes al dominio consultado y la sección de respuesta del mensaje DNS recibido. Se encarga de generar una memoria caché para el resolver y actualizarla luego de cada consulta al servidor.
+* **resolver(mensaje_consulta: bytes, ip_addr="198.41.0.4": str)**: La función sigue los pasos detallados en la parte 4 del enunciado de la actividad y finalmente, si no se cumple ninguna de las condiciones indicadas en los pasos, retorna el último mensaje recibido, junto a un mensaje indicando que la respuesta no es soportada por el resolver.
+* **Programa principal**: Este es el que maneja toda la lógica, recibe los mensajes del cliente, llama a la función resolver, entrega la respuesta al cliente y actualiza el listado de las últimas consultas y la memoria caché.
+
 ## Resultados de la experimentación
 
 Al momento de realizar la consulta:
