@@ -4,7 +4,6 @@ import sys
 import creator
 import parser
 
-SERVER_IP="arenarium"
 SERVER_PORT=8000
 BUFFER_SIZE=5
 
@@ -39,6 +38,27 @@ def receive_full_message(socket, buffer_size):
     return parser.parse_HTTP_message(full_message)
 
 if __name__ == "__main__":
+    json_name = "json_nombre.json"
+    json_address = ""
+    SERVER_IP = ""
+
+    if len(sys.argv) > 1:
+        if len(sys.argv) == 2:
+            SERVER_IP = sys.argv[1]    
+        elif len(sys.argv) == 3:
+            SERVER_IP = sys.argv[1]
+            json_name = sys.argv[2]
+        elif len(sys.argv) == 4:
+            SERVER_IP = sys.argv[1]
+            json_name = sys.argv[2]
+            json_address = sys.argv[3]
+        else:
+            print("Uso: python3 server.py <ip-servidor> [(<nombre-json> | <nombre-json> <ruta-relativa-json>)]")
+            sys.exit(0)
+    else:
+        print("Uso: python3 server.py <ip-servidor> [(<nombre-json> | <nombre-json> <ruta-relativa-json>)]")
+        sys.exit(0)
+
     buffer_size = BUFFER_SIZE
     new_socket_address = (SERVER_IP, SERVER_PORT)
 
@@ -53,17 +73,6 @@ if __name__ == "__main__":
     print("Sockets del servidor creados")
     print("-"*60)
     
-    json_name = "json_nombre.json"
-    json_address = ""
-
-    if len(sys.argv) == 2:
-        json_name = sys.argv[1]
-    elif len(sys.argv) == 3:
-        json_name = sys.argv[1]
-        json_address = sys.argv[2]
-    elif len(sys.argv) > 3:
-        print("Mas argumentos que lo esperado, usando valores por defecto")
-
     with open(json_address + json_name) as file:
         json = json.load(file)
 

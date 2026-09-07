@@ -4,7 +4,6 @@ from dnslib import DNSRecord, DNSHeader, RR, A
 from dnslib.dns import QTYPE
 import dnslib
 
-SERVER_IP="arenarium"
 SERVER_PORT=8000
 BUFF_SIZE = 8192
 
@@ -80,13 +79,23 @@ def resolver(mensaje_consulta, ip_addr="198.41.0.4"):
     return data
 
 if __name__ == "__main__":
-    server_socket_address = (SERVER_IP, SERVER_PORT)
-    debug = False
-    if len(sys.argv) == 2:
-        if sys.argv[1] in ["-d", "--debug"]:
+    SERVER_IP = ""
+    
+    if len(sys.argv) > 1:
+        if len(sys.argv) == 2:
+            SERVER_IP = sys.argv[1]
+        if len(sys.argv) == 3 and sys.argv[2] in ["-d", "--debug"]:
+            SERVER_IP = sys.argv[1]
             debug = True
         else:
-            print("Flag inválido, se continuará con la ejecución normal")
+           print("Uso: python3 resolver.py <ip-servidor> [(-d | --debug)]")
+           sys.exit(0)
+    else:
+        print("Uso: python3 resolver.py <ip-servidor> [(-d | --debug)]")
+        sys.exit(0)
+    
+    server_socket_address = (SERVER_IP, SERVER_PORT)
+    debug = False
 
 
     print("="*60)
