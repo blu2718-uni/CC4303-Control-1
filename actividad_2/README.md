@@ -40,7 +40,7 @@ En esta actividad, tal como se mencionó en la materia de DNS, se usaron sockets
 
 Además, como se optó por utilizar la librería dnslib, se dio uso al parser ya incluido por esta librería, el cual otorgaba una estructura de datos ya adecuada para el manejo correcto de los mensajes DNS.
 
-Por último, en la memoria caché, se decidió usar como estructura de datos un diccionario, el cual tiene como llaves los dominios consultados y como valores la lista de Resource Records de la respuesta, para entregar un mensaje DNS con este listado más fácilmente en una respuesta futura.
+Por último, en la memoria caché, se decidió usar como estructura de datos un diccionario, el cual tiene como llaves los dominios consultados y como valores la lista de Resource Records de la respuesta, para entregar un mensaje DNS con este listado más fácilmente en una respuesta futura. Ver función **gen_new_cache(last)**, ya que esta es la que se encarga de crear la memoria caché.
 
 El resto del programa sigue las instrucciones dadas en el enunciado de la actividad.
 
