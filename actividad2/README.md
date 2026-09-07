@@ -46,6 +46,14 @@ El resto del programa sigue las instrucciones dadas en el enunciado de la activi
 
 Es importante recalcar que una limitación de ignorar cualquier otro tipo de respuestas no consideradas en el paso 4 es, por ejemplo, que no podemos leer registros de tipo AAAA, es decir, no podremos obtener direcciones IP de 128 bits.
 
+## Implementación
+
+El programa consiste en 3 funciones, **gen_new_cache(last: List)**, **resolver(mensaje_consulta: bytes, ip_addr="198.41.0.4": str)** y el programa principal, que se ejecuta automáticamente.
+
+* **gen_new_cache(last: List)**: Esta función recibe una lista con tuplas correspondientes al dominio consultado y la sección de respuesta del mensaje DNS recibido. Se encarga de generar una memoria caché para el resolver y actualizarla luego de cada consulta al servidor.
+* **resolver(mensaje_consulta: bytes, ip_addr="198.41.0.4": str)**: La función sigue los pasos detallados en la parte 4 del enunciado de la actividad y finalmente, si no se cumple ninguna de las condiciones indicadas en los pasos, retorna el último mensaje recibido, junto a un mensaje indicando que la respuesta no es soportada por el resolver.
+* **Programa principal**: Este es el que maneja toda la lógica, recibe los mensajes del cliente, llama a la función resolver, entrega la respuesta al cliente y actualiza el listado de las últimas consultas y la memoria caché.
+
 ## Resultados de la experimentación
 
 Al momento de realizar la consulta:
@@ -77,7 +85,7 @@ Para el comando:
 ```
 dig -p8000 @[IP_SERVIDOR_DNS] www.cc4303.bachmann.cl
 ```
-no se obtiene una respuesta, ya que la respuesta que recibe el servidor para resolver no contiene ningún resource record de tipo A en la respuesta, ni recibe un resource record de tipo NS en la sección authority, por lo que, según enunciado, se debe ignorar, provocando un connection timed out para el cliente.
+no se obtiene una respuesta soportada por el resolver, ya que la respuesta que recibe el servidor para resolver no contiene ningún resource record de tipo A en la respuesta, ni recibe un resource record de tipo NS en la sección authority, por lo que, según enunciado, se debe ignorar, retornando el último mensaje recibido.
 
 En este caso se esperaba una respuesta de parte del servidor equivalente al comando ejecutado con cc4303.bachmann.cl, pero luego de realizar la misma consulta a @1.1.1.1, se puede apreciar que esta y la del servidor externo reciben respuestas de tipo SOA en la sección authority, con un rname bachmann.cl. y rdata ns1.digitalocean.com. hostmaster.bachmann.cl. 0 10800 3600 604800 1800. Esto probablemente ocurre porque se está dando un name server donde podría encontrarse www.cc4303.bachmann.cl, ya que no se logró encontrar esta dirección.
 
