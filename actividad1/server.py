@@ -132,6 +132,14 @@ if __name__ == "__main__":
                     keys = forbidden.keys()
                     for key in keys:
                         parsed_proxy_message["BODY"] = parsed_proxy_message["BODY"].replace(key, forbidden[key])
+
+                text_to_save_cl = f"Content-Length: {len(parsed_proxy_message["BODY"].encode())}"
+                cl_index = parsed_proxy_message["HEAD"].find("Content-Length: ") + 16
+                text_to_delete_cl = "Content-Length: "
+                while parsed_proxy_message["HEAD"][cl_index] != "\r":
+                    text_to_delete_cl += parsed_proxy_message["HEAD"][cl_index]
+                    cl_index += 1
+                parsed_proxy_message["HEAD"] = parsed_proxy_message["HEAD"].replace(text_to_delete_cl, text_to_save_cl)
                 
                 if not image[0]:
                     proxy_response_message = creator.create_HTTP_message(parsed_proxy_message)
