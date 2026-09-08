@@ -85,7 +85,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         if len(sys.argv) == 2:
             SERVER_IP = sys.argv[1]
-        if len(sys.argv) == 3 and sys.argv[2] in ["-d", "--debug"]:
+        elif len(sys.argv) == 3 and sys.argv[2] in ["-d", "--debug"]:
             SERVER_IP = sys.argv[1]
             debug = True
         else:
