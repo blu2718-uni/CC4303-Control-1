@@ -80,6 +80,7 @@ def resolver(mensaje_consulta, ip_addr="198.41.0.4"):
 
 if __name__ == "__main__":
     SERVER_IP = ""
+    debug = False
     
     if len(sys.argv) > 1:
         if len(sys.argv) == 2:
@@ -95,8 +96,6 @@ if __name__ == "__main__":
         sys.exit(0)
     
     server_socket_address = (SERVER_IP, SERVER_PORT)
-    debug = False
-
 
     print("="*60)
     print('Creando socket no orientado a conexión...')
